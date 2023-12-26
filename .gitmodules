@@ -1,0 +1,9 @@
+[submodule "extraction"]
+	path = lumi-extraction
+	url = git@github.com:miguelsmuller/lumi-extraction.git
+[submodule "back"]
+	path = lumi-back
+	url = git@github.com:miguelsmuller/lumi-back.git
+[submodule "front"]
+	path = lumi-front
+	url = git@github.com:miguelsmuller/lumi-front.git

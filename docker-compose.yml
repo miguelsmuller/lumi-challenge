@@ -1,0 +1,28 @@
+version: '3'
+services:
+  lumi-invoice-back:
+    container_name: lumi-invoice-back
+    build:
+      context: ./lumi-back
+    ports:
+      - "5028:5028"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    networks:
+      - lumi-network
+
+  lumi-invoice-front:
+    container_name: lumi-invoice-front
+    build:
+      context: ./lumi-front
+      args:
+        - API_URL=http://localhost:5028
+    ports:
+      - "3090:80"
+    depends_on:
+      - invoice-back
+    networks:
+      - lumi-network
+
+networks:
+  lumi-network:

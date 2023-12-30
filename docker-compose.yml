@@ -1,28 +1,43 @@
 version: '3'
 services:
+  lumi-db:
+    container_name: lumi-db
+    image: postgres:14.1-alpine
+    environment:
+      # default user = postgres
+      POSTGRES_PASSWORD: 'root'
+      POSTGRES_DB: 'lumi'
+      PGDATA: /data/postgres
+    volumes:
+       - postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    restart: always
+
   lumi-invoice-back:
     container_name: lumi-invoice-back
     build:
       context: ./lumi-back
     ports:
-      - "5028:5028"
+      - "2002:3000"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-    networks:
-      - lumi-network
+      DB_CONNECTION: postgres
+      DB_HOST: "lumi-db"
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: root
+      DB_DATABASE: lumi
+    depends_on:
+      - lumi-db
 
   lumi-invoice-front:
     container_name: lumi-invoice-front
     build:
       context: ./lumi-front
-      args:
-        - API_URL=http://localhost:5028
     ports:
-      - "3090:80"
+      - "2004:80"
     depends_on:
-      - invoice-back
-    networks:
-      - lumi-network
+      - lumi-invoice-back
 
-networks:
-  lumi-network:
+volumes:
+  postgres:

@@ -14,6 +14,15 @@ services:
       - "5432:5432"
     restart: always
 
+  lumi-initial-extraction:
+    container_name: lumi-initial-extraction
+    build:
+      context: ./lumi-extraction
+    volumes:
+      - ../docs/FATURAS:/docs
+    depends_on:
+      - lumi-db
+
   lumi-invoice-back:
     container_name: lumi-invoice-back
     build:
@@ -28,12 +37,14 @@ services:
       DB_PASSWORD: root
       DB_DATABASE: lumi
     depends_on:
-      - lumi-db
+      - lumi-initial-extraction
 
   lumi-invoice-front:
     container_name: lumi-invoice-front
     build:
       context: ./lumi-front
+      args:
+        REACT_APP_API_URL: http://localhost:2002
     ports:
       - "2004:80"
     depends_on:
